@@ -22,7 +22,23 @@ function getURLsFromHTML(htmlBody, baseURL) {
     });
 }
 
-async function crawlPage(currentUrl) {
+async function crawlPage(baseURL, currentUrl, pages) {
+    if (!sameDomain(baseURL, currentUrl)) {
+        return pages
+    }
+
+    const normalizedCurrentUrl = normalizeURL(currentUrl);
+    console.log('Crawling: ' + normalizedCurrentUrl);
+    
+    if (normalizedCurrentUrl in pages) {
+        pages[normalizedCurrentUrl] += 1;
+        return pages
+    } else if (normalizedCurrentUrl === normalizeURL(baseURL)) {
+        pages[normalizedCurrentUrl] = 0;
+    } else {
+        pages[normalizedCurrentUrl] = 1;
+    }
+
     let response
     try {
         response = await fetch(currentUrl);
@@ -38,7 +54,21 @@ async function crawlPage(currentUrl) {
         return ''
     }
 
-    console.log(await response.text());
+    const htmlBody = await response.text();
+    const newURLs = getURLsFromHTML(htmlBody, baseURL);
+    for (url of newURLs) {
+        await crawlPage(baseURL, url, pages)
+    }
+
+    return pages
+}
+
+
+function sameDomain(url1, url2) {
+    const a = new URL(url1);
+    const b = new URL(url2);
+
+    return a.hostname === b.hostname
 }
 
 module.exports = {

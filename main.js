@@ -2,13 +2,14 @@ const { error } = require('./error');
 const crawl = require('./crawl');
 
 
-function main(mainURL) {
+async function main(mainURL) {
     if (!URL.canParse(mainURL)) {
         error('ERROR: Not a valid URL');
         return
     }
 
-    crawl.crawlPage(mainURL);
+    const pages = await crawl.crawlPage(mainURL, mainURL, {});
+    console.log(pages);
 }
 
 
