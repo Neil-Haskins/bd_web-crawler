@@ -28,8 +28,8 @@ async function crawlPage(baseURL, currentUrl, pages) {
     }
 
     const normalizedCurrentUrl = normalizeURL(currentUrl);
-    console.log('Crawling: ' + normalizedCurrentUrl);
-    
+    // console.log('Crawling: ' + normalizedCurrentUrl);
+
     if (normalizedCurrentUrl in pages) {
         pages[normalizedCurrentUrl] += 1;
         return pages
@@ -56,7 +56,7 @@ async function crawlPage(baseURL, currentUrl, pages) {
 
     const htmlBody = await response.text();
     const newURLs = getURLsFromHTML(htmlBody, baseURL);
-    for (url of newURLs) {
+    for (const url of newURLs) {
         await crawlPage(baseURL, url, pages)
     }
 

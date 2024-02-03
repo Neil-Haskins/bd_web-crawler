@@ -1,5 +1,6 @@
 const { error } = require('./error');
-const crawl = require('./crawl');
+const { crawlPage } = require('./crawl');
+const { printReport } = require('./report');
 
 
 async function main(mainURL) {
@@ -8,8 +9,9 @@ async function main(mainURL) {
         return
     }
 
-    const pages = await crawl.crawlPage(mainURL, mainURL, {});
-    console.log(pages);
+    console.log("Begginning crawl of " + mainURL);
+    const pages = await crawlPage(mainURL, mainURL, {});
+    printReport(pages);
 }
 
 
